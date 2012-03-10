@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Trello Burndown</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="/static/css/burndown.css" rel="stylesheet">
+    <link href="/static/css/bootstrap.css" rel="stylesheet">
+    <style>
+      body {
+        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+      }
+    </style>
+    <link href="/static/css/bootstrap-responsive.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="/static/images/favicon.ico">
+    <link rel="apple-touch-icon" href="/static/images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/static/images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/static/images/apple-touch-icon-114x114.png">
+    
+    <script id="sprints-template" type="text/x-handlebars-template">
+    <h1>Sprints</h1>
+    <hr>
+    <div class="span8">
+        <ul id="sprint_list"></ul>
+        <form class="well form-inline" action="#">
+            <input type="text" id="new_sprint" placeholder="sprint name" class="span4">
+            <button class="btn-primary" id="add_new_sprint">add</button>
+        </form>
+    </div>
+    </script>
+
+    <script id="sprint-item-template" type="text/x-handlebars-template">
+    <a class='route_link' href='{{url}}'><strong>{{name}}</strong></a> (<em>{{start_date}} - {{end_date}}</em>)
+    <i class="icon-trash delete_sprint"></i>
+    </script>
+    
+    <script id="sprint-template" type="text/x-handlebars-template">
+    <h2><input type="text" value="{{name}}" class="hover_edit" name="name"></h2>
+    <input type="text" value="{{start_date}}" class="hover_edit" name="start_date" placeholder="Start date">
+    to
+    <input type="text" value="{{end_date}}" class="hover_edit" name="end_date" placeholder="End date">
+    <hr>
+    <h4>Burndown</h4>
+    <div id="burndown_chart" class="span8"> </div>
+    </script>
+  </head>
+
+  <body>
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand route_link" href="/">Trello Burndown</a>
+          <div class="nav-collapse">
+            <ul class="nav">
+              <li class="active"><a href="/" class="route_link">Sprints</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+
+        <div id="main"></div>
+
+    </div> <!-- /container -->
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/static/js/lib/jquery-1.7.1.min.js"></script>
+    <script src="/static/js/lib/bootstrap.min.js"></script>
+    <script src="/static/js/lib/underscore-min.js"></script>
+    <script src="/static/js/lib/backbone.js"></script>
+    <script src="/static/js/lib/handlebars-1.0.0.beta.6.js"></script>
+    <script src="/static/js/lib/morris.js"></script>
+    <script src="/static/js/lib/raphael-min.js"></script>
+    <script src="/static/js/burndown.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script>
+    $(function() {
+        var router = new BurndownRouter;
+        Backbone.history.start({pushState: true});
+        
+        setup_router_handlers(router);
+    });
+    </script>
+
+  </body>
+</html>

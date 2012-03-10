@@ -1,0 +1,1 @@
+<html><body>You are being <a href="https://raw.github.com/douglascrockford/JSON-js/master/json2.js">redirected</a>.</body></html>

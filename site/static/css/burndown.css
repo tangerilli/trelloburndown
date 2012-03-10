@@ -1,0 +1,37 @@
+ul#sprint_list {
+    list-style-type: none;
+    margin-left: 0px;
+    padding-left: 0px;
+}
+
+i.delete_sprint {
+    position: absolute;
+    left: 450px;
+    margin-top: 3px;
+}
+
+i.delete_sprint:hover {
+    cursor: pointer;
+}
+
+h2 input {
+    font-size: 24px;
+    height: 24px;
+}
+
+.hover_edit {
+	border: 1px solid transparent;
+	padding: 3px;
+}
+
+.hover_edit:focus {
+	border: 1px solid #FFD8C4;	
+}
+
+.hover_edit:hover {
+    border:1px solid #ddd !important;
+}
+
+div#burndown_chart {
+    height: 250px;
+}
