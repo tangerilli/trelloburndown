@@ -14,17 +14,37 @@ var SprintView = Backbone.View.extend({
         this.model.bind("change", this.render, this);
     },
     events: {
-        "blur input.hover_edit":"edit_field"
+        "blur input.auto_commit":"auto_edit_field"
     },
     render: function() {
         var html = this.template(this.model.toJSON());
         this.$el.html(html);
+        
+        Morris.Line({
+            element: "burndown_chart",
+            data: this.model.get("efforts"),
+            xkey: "timestamp",
+            ykeys: ["remaining", "ideal"],
+            labels: ["Remaining", "Ideal"],
+            hideHover: true
+        });
+        var view = this;
+        $("input.date_edit").datepicker({
+            dateFormat: 'yy-mm-dd',
+            onSelect: function() {
+                view.edit_field($(this));
+            }
+        });
+        
         return this;
     },
-    edit_field: function(ev) {
-        var field_name = $(ev.target).attr("name");
+    auto_edit_field: function(ev) {
+        this.edit_field($(ev.target));
+    },
+    edit_field: function(el) {
+        var field_name = el.attr("name");
         var attr = {};
-        attr[field_name] = $(ev.target).val();
+        attr[field_name] = el.val();
         this.model.set(attr);
         this.model.save();
     }
@@ -97,7 +117,6 @@ var BurndownRouter = Backbone.Router.extend({
         this._current_view = null;
     },
     sprints: function() {
-        console.debug("sprints!");
         this.clear_views();
         var sprints = new Sprints;
         var router = this;
@@ -112,27 +131,18 @@ var BurndownRouter = Backbone.Router.extend({
         })
     },
     sprint: function(id) {
-        console.debug("viewing sprint");
         this.clear_views();
         var sprint = new Sprint({id: id});
         var router = this;
         sprint.fetch({
             success: function() {
+                $("div#main").html("<div class='sprint'></div>");
                 var view = new SprintView({
+                    el: $("div.sprint"),
                     model: sprint
                 });
-                console.debug(sprint);
                 router._current_view = view;
-                $("div#main").html(view.render().el);
-                
-                Morris.Line({
-                    element: "burndown_chart",
-                    data: sprint.get("efforts"),
-                    xkey: "timestamp",
-                    ykeys: ["remaining", "ideal"],
-                    labels: ["Remaining", "Ideal"],
-                    hideHover: true
-                });
+                view.render();
             }
         });
     },

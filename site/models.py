@@ -53,7 +53,7 @@ class Sprint(Base):
     
     def json_to_date(self, data):        
         if data:
-            return datetime.date(*[int(n) for n in data.split("-")])
+            return datetime.datetime(*[int(n) for n in data.split("-")])
         return None
             
     def to_dict(self):        
@@ -67,8 +67,7 @@ class Sprint(Base):
             actual_efforts = {}
             for effort in effort_qry:
                 actual_efforts[effort.timestamp.date()] = effort
-            first_effort = effort_qry.first()
-            ideal_remaining = first_effort.remaining
+            ideal_remaining = effort_qry.first().remaining
             per_day = float(ideal_remaining) / ((self.end_date - self.start_date).days)
             date = self.start_date.date()
             efforts = []
