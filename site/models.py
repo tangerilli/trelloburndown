@@ -11,6 +11,7 @@ from sqlalchemy import Column, ForeignKey
 from sqlalchemy.types import String, Integer, DateTime
 
 from framework import Base
+import settings
 
 class Effort(Base):
     __tablename__ = 'effort'
@@ -72,16 +73,21 @@ class Sprint(Base):
             date = self.start_date.date()
             efforts = []
             one_day = datetime.timedelta(days=1)
+            actual_remaining = ideal_remaining
             while date <= self.end_date.date():
                 effort = {"ideal":math.floor(ideal_remaining), "timestamp":self.date_to_json(date)}
                 ideal_remaining = max(ideal_remaining-per_day, 0)
                 if date in actual_efforts:
                     effort["remaining"] = actual_efforts[date].remaining
+                    actual_remaining = actual_efforts[date].remaining
                 else:
                     effort["remaining"] = None
                 efforts.append(effort)
                 date += one_day
             data["efforts"] = efforts
+            data["total"] = effort_qry.first().remaining
+            data["remaining"] = actual_remaining
+            data["board"] = "https://trello.com/board/%s" % settings.BOARD_ID
         return data
                 
     def from_dict(self, data):

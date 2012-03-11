@@ -64,6 +64,7 @@ class Sprints(Resource):
         sprint = Sprint()
         sprint.from_dict(data)
         cherrypy.request.db.add(sprint)
+        cherrypy.request.db.commit()
         return json.dumps(sprint.to_dict())
         
 class Root(Resource):

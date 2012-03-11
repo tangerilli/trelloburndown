@@ -51,7 +51,7 @@ var SprintView = Backbone.View.extend({
 });
 
 var SprintListItemView = Backbone.View.extend({
-    tagName: "li",
+    tagName: "tr",
     className: "sprint",
     initialize: function() {
         this.template = Handlebars.compile($("#sprint-item-template").html());

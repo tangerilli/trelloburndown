@@ -33,7 +33,17 @@
     <h1>Sprints</h1>
     <hr>
     <div class="span8">
-        <ul id="sprint_list"></ul>
+        <table class="table" id="sprint_list">
+            <thead>
+                <tr>
+                    <th>Sprint</th>
+                    <th>Dates</th>
+                    <th>Total Effort</th>
+                    <th>Effort Remaining</th>
+                    <th></th>
+                </tr>
+            </thead>
+        </table>
         <form class="well form-inline" action="#">
             <input type="text" id="new_sprint" placeholder="sprint name" class="span4">
             <button class="btn-primary" id="add_new_sprint">add</button>
@@ -42,8 +52,11 @@
     </script>
 
     <script id="sprint-item-template" type="text/x-handlebars-template">
-    <a class='route_link' href='{{url}}'><strong>{{name}}</strong></a> (<em>{{start_date}} - {{end_date}}</em>)
-    <i class="icon-trash delete_sprint"></i>
+        <td><a class='route_link' href='{{url}}'><strong>{{name}}</strong></a></td>
+        <td><em>{{start_date}} - {{end_date}}</em></td>
+        <td>{{total}}</td>
+        <td>{{remaining}}</td>
+        <td><i class="icon-trash delete_sprint"></i></td>
     </script>
     
     <script id="sprint-template" type="text/x-handlebars-template">
@@ -51,6 +64,9 @@
     <input type="text" value="{{start_date}}" class="hover_edit date_edit" name="start_date" placeholder="Start date">
     <span class='date_edit_label'>to</span>
     <input type="text" value="{{end_date}}" class="hover_edit date_edit" name="end_date" placeholder="End date">
+    <div class="board_link">
+    <a href="{{board}}">view trello board</a>
+    </div>
     <hr>
     <h4>Burndown</h4>
     <div id="burndown_chart" class="span8"> </div>
