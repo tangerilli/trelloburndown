@@ -73,7 +73,6 @@
         }
         this.series.push(series_data);
       }
-      console.debug(this.series);
       if (this.options.parseTime) {
         this.xvals = $.map(this.columnLabels, function(x) {
           return _this.parseYear(x);
@@ -110,7 +109,7 @@
     };
 
     Line.prototype.redraw = function() {
-      var c, circle, columns, coords, dx, dy, firstY, height, hideHover, hilight, hover, hoverHeight, hoverMargins, hoverSet, i, label, labelBox, labelText, lastY, left, lineY, maxYLabelWidth, path, pointGrow, pointShrink, prevHilight, prevLabelMargin, s, seriesCoords, seriesPoints, touchHandler, transX, transY, updateHilight, updateHover, v, width, x, xLabel, xLabelMargin, y, yInterval, yLabel, yLabels, _i, _j, _len, _len2, _ref, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7,
+      var c, circle, columns, coords, dx, dy, firstY, height, hideHover, hilight, hover, hoverHeight, hoverMargins, hoverSet, i, label, labelBox, labelText, lastY, left, lineY, maxYLabelWidth, path, pointGrow, pointShrink, prevHilight, prevLabelMargin, s, scoords, seriesCoords, seriesPoints, touchHandler, transX, transY, updateHilight, updateHover, v, width, x, xLabel, xLabelMargin, y, yInterval, yLabel, yLabels, _i, _j, _len, _len2, _ref, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7,
         _this = this;
       this.el.empty();
       this.r = new Raphael(this.el[0]);
@@ -165,12 +164,18 @@
       _ref3 = this.series;
       for (_i = 0, _len = _ref3.length; _i < _len; _i++) {
         s = _ref3[_i];
-        seriesCoords.push($.map(s, function(y, i) {
-          return {
-            x: columns[i],
-            y: transY(y)
-          };
-        }));
+        scoords = [];
+        $.each(s, function(i, y) {
+          if (y === null) {
+            return scoords.push(null);
+          } else {
+            return scoords.push({
+              x: columns[i],
+              y: transY(y)
+            });
+          }
+        });
+        seriesCoords.push(scoords);
       }
       for (i = _ref4 = seriesCoords.length - 1; _ref4 <= 0 ? i <= 0 : i >= 0; _ref4 <= 0 ? i++ : i--) {
         coords = seriesCoords[i];
@@ -191,7 +196,11 @@
         _ref6 = seriesCoords[i];
         for (_j = 0, _len2 = _ref6.length; _j < _len2; _j++) {
           c = _ref6[_j];
-          circle = this.r.circle(c.x, c.y, this.options.pointSize).attr('fill', this.options.lineColors[i]).attr('stroke-width', 1).attr('stroke', '#ffffff');
+          if (c === null) {
+            circle = null;
+          } else {
+            circle = this.r.circle(c.x, c.y, this.options.pointSize).attr('fill', this.options.lineColors[i]).attr('stroke-width', 1).attr('stroke', '#ffffff');
+          }
           seriesPoints[i].push(circle);
         }
       }
@@ -212,7 +221,7 @@
         hoverSet.show();
         xLabel.attr('text', _this.columnLabels[index]);
         for (i = 0, _ref8 = _this.series.length - 1; 0 <= _ref8 ? i <= _ref8 : i >= _ref8; 0 <= _ref8 ? i++ : i--) {
-          yLabels[i].attr('text', "" + _this.seriesLabels[i] + ": " + (_this.commas(_this.series[i][index])) + _this.options.units);
+          yLabels[i].attr('text', "" + _this.seriesLabels[i] + ": " + (_this.prettifylabel(_this.series[i][index])) + _this.options.units);
         }
         maxLabelWidth = Math.max.apply(null, $.map(yLabels, function(l) {
           return l.getBBox().width;
@@ -299,9 +308,12 @@
       return hilight(this.options.hideHover ? null : 0);
     };
 
-    Line.prototype.createPath = function(coords, top, left, bottom, right) {
-      var c, g, grads, i, ix, lc, lg, path, x1, x2, y1, y2, _ref;
+    Line.prototype.createPath = function(all_coords, top, left, bottom, right) {
+      var c, coords, g, grads, i, ix, lc, lg, path, x1, x2, y1, y2, _ref;
       path = "";
+      coords = $.map(all_coords, function(c) {
+        return c;
+      });
       if (this.options.smooth) {
         grads = this.gradients(coords);
         for (i = 0, _ref = coords.length - 1; 0 <= _ref ? i <= _ref : i >= _ref; 0 <= _ref ? i++ : i--) {
@@ -379,6 +391,11 @@
       } else {
         return parseInt(date, 10);
       }
+    };
+
+    Line.prototype.prettifylabel = function(num) {
+      if (num === null) return "n/a";
+      return this.commas(num);
     };
 
     Line.prototype.commas = function(num) {
