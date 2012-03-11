@@ -22,6 +22,8 @@ h2 input {
 .hover_edit {
 	border: 1px solid transparent;
 	padding: 3px;
+	-box-shadow: none;
+	-webkit-box-shadow: none;
 }
 
 .hover_edit:focus {
@@ -34,4 +36,15 @@ h2 input {
 
 div#burndown_chart {
     height: 250px;
+}
+
+input.date_edit {
+    width: 75px;
+    padding-top: 0px;
+    margin-bottom: -3px;
+}
+
+span.date_edit_label {
+    display: inline-block;
+    padding-right: 5px;
 }
