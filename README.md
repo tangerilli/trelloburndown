@@ -4,9 +4,9 @@ Trello (http://www.trello.com) is a nice tool for managing lists of things. Thos
 
 ## Requirements
 
-- An account on trello.com
+- An account on http://trello.com
 - cherrypy (http://www.cherrypy.org/)
-- requests (python-requests.org)
+- requests (http://python-requests.org)
 - sqlalchemy (http://www.sqlalchemy.org/)
 
 ## Usage
@@ -18,10 +18,23 @@ Run fetcher.py once a day manually, or use the -d option along with the -f or -t
 cherrypy.org has more information about deploying cherrypy apps, but in the simplest case, just run "python server.py" and connect to http://localhost:8080. Create a sprint, view it to edit the dates, and a graph should be created if there is any data to use.
 
 By default, effort estimates from Trello are extracted by looking for "(<number>)" in the task title. get_totals in fetcher.py can be modified to look elsewhere if necessary. The total effort for the sprint is currently just derived from the remaining effort on the first day of the sprint. The names of the lists that constitute remaining effort vs. completed effort can be modified in settings.py.
+    
+## Credits
+
+In addition to the above requirements, trelloburndown uses:
+
+- bootstrap (http://twitter.github.com/bootstrap)
+- jquery and jquery-ui (http://jquery.com)
+- morris.js (http://oesmith.github.com/morris.js/)
+- backbone.js (http://documentcloud.github.com/backbone)
+- handlebars (http://handlebarsjs.com/)
+- underscore.js (http://documentcloud.github.com/underscore/)
+- Raphael (http://raphaeljs.com/)
 
 ## License
 
 Copyright (c) 2012, Tony Angerilli
+
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
