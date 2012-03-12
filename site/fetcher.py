@@ -2,6 +2,8 @@ import sys
 import os
 import re
 import datetime
+import time
+from optparse import OptionParser
 
 import requests
 import simplejson as json
@@ -48,16 +50,42 @@ def get_totals():
     return (remaining, completed, total)
 
 def update(session):
-    # remaining, completed, total = get_totals()
-    remaining, completed, total = 97, 10, 107
+    remaining, completed, total = get_totals()
     print "%s days remaining, %s days total" % (remaining, total)
-    effort = Effort(remaining, completed, timestamp=datetime.date(2012, 3, 14))
-    # session.add(effort)
-    # session.commit()
+    effort = Effort(remaining, completed)
+    session.add(effort)
+    session.commit()
     
 def main(args):
+    parser = OptionParser()
+    parser.add_option("-d", "--daemon", dest="daemon", action="store_true", 
+                      help="Script will run forever, periodically updating")
+    parser.add_option("-f", "--frequency", dest="frequency", default=60*24, type="int",
+                      help="Frequency (in min) to update in daemon mode (default=%s (24 hours))" % (60*24))
+    parser.add_option("-t", "--time", dest="time", 
+                      help="The time (format: HH:MM) to update in daemon mode (overrides frequency)")
+    (options, args) = parser.parse_args()
+    
     session = framework.setup_db(settings.DATABASE_URI)
-    update(session)
+    if options.daemon:
+        while True:
+            if options.time:
+                target_h, target_m = [int(i) for i in options.time.split(":")]
+                n = datetime.datetime.now()
+                if target_h < n.hour or (target_h == n.hour and target_m <= n.minute):
+                    target_time = n + datetime.timedelta(days=1)
+                    target_time = target_time.replace(hour=target_h, minute=target_m)
+                    diff = target_time - n
+                    sleep_time = (diff.days*60*60*24) + diff.seconds
+                else:
+                    sleep_time = ((target_h - n.hour)*60*60) + ((target_m - n.minute)*60) - n.second
+            else:
+                sleep_time = options.frequency*60
+            print "Sleeping for %s minutes" % (sleep_time/60.0)
+            time.sleep(sleep_time)
+            update(session)
+    else:
+        update(session)
     
 if __name__=="__main__":
     sys.exit(main(sys.argv))

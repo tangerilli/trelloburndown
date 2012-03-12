@@ -13,7 +13,7 @@ from cherrypy.process import wspbus, plugins
 Base = declarative_base()
 
 def setup_db(uri):
-    sa_engine = create_engine(uri, echo=True)
+    sa_engine = create_engine(uri, echo=False)
     Base.metadata.create_all(sa_engine)
     Session = sessionmaker(bind=sa_engine)
     return Session()
