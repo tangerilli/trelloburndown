@@ -64,7 +64,7 @@ class Sprint(Base):
                 "end_date":self.date_to_json(self.end_date)}
         if self.start_date and self.end_date:
             # TODO: Refactor this to be less horrible
-            effort_qry = cherrypy.request.db.query(Effort).filter(Effort.timestamp >= self.start_date).filter(Effort.timestamp <= self.end_date)
+            effort_qry = cherrypy.request.db.query(Effort).filter(Effort.timestamp >= self.start_date).filter(Effort.timestamp <= self.end_date).order_by(Effort.timestamp)
             actual_efforts = {}
             for effort in effort_qry:
                 actual_efforts[effort.timestamp.date()] = effort
