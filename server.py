@@ -80,7 +80,11 @@ def main(argv):
     conf = {'/static': {'tools.staticdir.on': True,
                         'tools.staticdir.dir': os.path.join(settings.CURRENTDIR, 'static')},
             '/': {'tools.db.on': True}}
-    cherrypy.quickstart(Root(), "/", config=conf)
+    cherrypy.config.update({'server.socket_host': '0.0.0.0', 
+                         'server.socket_port': 8081, 
+                        })
+
+    cherrypy.quickstart(Root(), "/burndown", config=conf)
     #, 'request.dispatchs': cherrypy.dispatch.MethodDispatcher()
 
 if __name__=="__main__":

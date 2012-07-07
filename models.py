@@ -9,6 +9,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker, relationship, backref
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, ForeignKey
 from sqlalchemy.types import String, Integer, DateTime
+from sqlalchemy import desc
 
 from framework import Base
 import settings
