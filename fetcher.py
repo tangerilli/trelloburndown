@@ -19,7 +19,7 @@ def board_url():
     return os.path.join(settings.TRELLO_API_URL, "boards", settings.BOARD_ID)
 
 def add_params(url):
-    params = "?key=%s&token=%s" % (settings.API_KEY, settings.USER_TOKEN)
+    params = "?key=%s&token=%s&cards=all" % (settings.API_KEY, settings.USER_TOKEN)
     return url + params
 
 def cards_url():
