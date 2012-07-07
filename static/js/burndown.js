@@ -1,9 +1,9 @@
 var Sprint = Backbone.Model.extend({
-    urlRoot: "/sprints"
+    urlRoot: "/burndown/sprints"
 });
 var Sprints = Backbone.Collection.extend({
     model: Sprint,
-    url: "/sprints",
+    url: "/burndown/sprints",
 });
 
 var SprintView = Backbone.View.extend({
@@ -109,9 +109,9 @@ var SprintsView = Backbone.View.extend({
 
 var BurndownRouter = Backbone.Router.extend({
     routes: {
-        "":"sprints",
-        "sprints":"sprints",
-        "sprints/:id":"sprint"
+        "burndown":"sprints",
+        "burndown/sprints":"sprints",
+        "burndown/sprints/:id":"sprint"
     },
     initialize: function() {
         this._current_view = null;
