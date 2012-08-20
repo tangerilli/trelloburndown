@@ -44,6 +44,7 @@ def get_totals():
         lists = json.loads(response.content)
     except Exception, e:
         log.exception("Error fetching lists from %s" % add_params(lists_url()))
+        log.info("Response code: %s" % response.status_code)
         log.info("Content: %s", response.content)
         raise FetcherException("Error fetching lists")
     for l in lists:
