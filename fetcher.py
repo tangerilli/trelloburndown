@@ -3,6 +3,7 @@ import os
 import re
 import datetime
 import time
+import logging
 from optparse import OptionParser
 
 import requests
@@ -14,6 +15,10 @@ from sqlalchemy.ext.declarative import declarative_base
 import settings
 import framework
 from models import Effort
+
+log = logging.getLogger('fetcher')
+
+class FetcherException(Exception): pass
 
 def board_url():
     return os.path.join(settings.TRELLO_API_URL, "boards", settings.BOARD_ID)
@@ -34,9 +39,13 @@ def get_totals():
     completed = 0
     total = 0
     
-    # TODO: Add some error checking
     response = requests.get(add_params(lists_url()))
-    lists = json.loads(response.content)
+    try:
+        lists = json.loads(response.content)
+    except Exception, e:
+        log.exception("Error fetching lists from %s" % add_params(lists_url()))
+        log.info("Content: %s", response.content)
+        raise FetcherException("Error fetching lists")
     for l in lists:
         for card in l["cards"]:
             m = re.search("\((\d+)\)", card["name"])
@@ -50,7 +59,12 @@ def get_totals():
     return (remaining, completed, total)
 
 def update(session):
-    remaining, completed, total = get_totals()
+    try:
+        remaining, completed, total = get_totals()
+    except FetcherException, e:
+        print "Error fetching data: %s" % e
+        return
+        
     print "%s days remaining, %s days total" % (remaining, total)
     effort = Effort(remaining, completed)
     session.add(effort)
@@ -88,4 +102,8 @@ def main(args):
         update(session)
     
 if __name__=="__main__":
+    logging.basicConfig()
+    log.setLevel(logging.INFO)
+    for handler in logging.getLogger().handlers:
+        handler.setFormatter(logging.Formatter("%(asctime)s %(name)-19s %(levelname)-7s - %(message)s"))
     sys.exit(main(sys.argv))
