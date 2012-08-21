@@ -21,17 +21,17 @@ log = logging.getLogger('fetcher')
 class FetcherException(Exception): pass
 
 def board_url():
-    return os.path.join(settings.TRELLO_API_URL, "boards", settings.BOARD_ID)
+    return settings.TRELLO_API_URL + "boards/" + settings.BOARD_ID
 
 def add_params(url):
     params = "?key=%s&token=%s&cards=all" % (settings.API_KEY, settings.USER_TOKEN)
     return url + params
 
 def cards_url():
-    return os.path.join(board_url(), "cards")    
+    return board_url() + "/cards"    
 
 def lists_url():
-    return os.path.join(board_url(), "lists")    
+    return board_url() + "/lists"  
 
 def get_totals():
     """Returns a tuple containing the remaining effort, the completed effort and the total effort"""
